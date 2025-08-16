@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mood & Productivity Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1a1a2e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #ffcc00;
+    }
+    .container {
+      background: #16213e;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+      width: 400px;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #ffcc00;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #ffaa00;
+    }
+    .entries {
+      background: #0f3460;
+      padding: 15px;
+      border-radius: 12px;
+      width: 400px;
+    }
+    .entry {
+      background: #1a1a2e;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mood & Productivity Tracker</h1>
+
+  <div class="container">
+    <label for="mood">Mood (1-10):</label>
+    <input type="number" id="mood" min="1" max="10">
+
+    <label for="productivity">Productivity (1-10):</label>
+    <input type="number" id="productivity" min="1" max="10">
+
+    <label for="notes">Notes:</label>
+    <textarea id="notes"></textarea>
+
+    <button onclick="saveEntry()">Save Entry</button>
+    <button onclick="showEntries()">View Entries</button>
+  </div>
+
+  <div class="entries" id="entriesContainer">
+    <h2>Saved Entries</h2>
+    <div id="entriesList"></div>
+  </div>
+
+  <script>
+    function saveEntry() {
+      let date = new Date().toLocaleDateString();
+      let mood = document.getElementById("mood").value;
+      let productivity = document.getElementById("productivity").value;
+      let notes = document.getElementById("notes").value;
+
+      if (!mood || !productivity) {
+        alert("Please fill mood and productivity.");
+        return;
+      }
+
+      let entry = {
+        date: date,
+        mood: mood,
+        productivity: productivity,
+        notes: notes
+      };
+
+      let allEntries = JSON.parse(localStorage.getItem("entries")) || [];
+      allEntries.push(entry);
+      localStorage.setItem("entries", JSON.stringify(allEntries));
+
+      alert("Your entry has been saved!");
+      document.getElementById("mood").value = "";
+      document.getElementById("productivity").value = "";
+      document.getElementById("notes").value = "";
+    }
+
+    function showEntries() {
+      let entriesList = document.getElementById("entriesList");
+      entriesList.innerHTML = "";
+      let allEntries = JSON.parse(localStorage.getItem("entries")) || [];
+
+      allEntries.forEach(entry => {
+        let div = document.createElement("div");
+        div.className = "entry";
+        div.innerHTML = `<strong>${entry.date}</strong><br>
+                         Mood: ${entry.mood} | Productivity: ${entry.productivity}<br>
+                         Notes: ${entry.notes}`;
+        entriesList.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
+
